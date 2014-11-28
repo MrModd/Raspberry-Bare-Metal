@@ -17,7 +17,7 @@
 ##########################################################################
 
 # Select all subdirectory
-SUBDIR = $(shell find . -mindepth 1 -maxdepth 1 -type d)
+SUBDIR = $(shell find . -mindepth 1 -maxdepth 1 -type d -not -path ./.git)
 
 # Compile every sudbirectory
 all:
