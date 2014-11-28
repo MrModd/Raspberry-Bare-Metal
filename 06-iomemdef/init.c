@@ -62,7 +62,7 @@ void init_gpio()
 	GPIO1_SET_OUTPUT(GPIO_LED_SEL_OFFSET)
 }
 
-/* Init memory periferals and then jump to entry() */
+/* Init memory peripherals and then jump to entry() */
 void _init()
 {
 	init_bss();

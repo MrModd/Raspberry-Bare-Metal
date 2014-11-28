@@ -126,7 +126,7 @@ void init_uart()
 {
 	/* Examples:
 	 * http://wiki.osdev.org/ARM_RaspberryPi_Tutorial_C#uart.c
-	 * https://github.com/dwelch67/raspberrypi/blob/master/uart01/uart01.c */
+	 * https://github.com/dwelch67/raspberrypi/tree/master/uartx01 */
 	
 	/* Disable UART0 */
 	iomem_low(UART_CR, UART_CR_UARTEN);
@@ -140,12 +140,12 @@ void init_uart()
 	
 	/* Remove pull resistors from UART pins (SoC manual at page 100-101) */
 	iomem(GPIO_GPPUD) &= 0u; /* 0b00 in order to remove pull resistors */
-	loop_delay(80);
+	loop_delay(80); /* Wait 150 clock cycle (loop_delay(1) takes more than 1 tick) */
 	iomem_high(GPIO_GPPUDCLK0, ((1<<GPIO_UART_TX) | (1<<GPIO_UART_RX)));
 	/* Bits set to 1 in GPIO_GPPUDCLK0/1 assume the pull-up/down state
 	 * defined in register GPPUD. Having set to 0 that register we want
 	 * to disable pull resistors from GPIO 14 and 15 */
-	loop_delay(80);
+	loop_delay(80); /* Wait 150 clock cycle (loop_delay(1) takes more than 1 tick) */
 	/* We should reset GPIO_GPPUD register, but it is already 0 */
 	iomem(GPIO_GPPUDCLK0) &= 0u; /* Now GPIO14 and 15 has taken requested state. Reset the register */
 	
@@ -171,11 +171,15 @@ void init_uart()
 	/* Reset flag register */
 	iomem(UART_FR) = 0x80;
 	
+	/* Wait a bit until all buffers are flushed from previous operations (uboot) */
 	loop_delay(10000u);
 }
 
 void init_miniuart()
 {
+	/* Examples:
+	 * https://github.com/dwelch67/raspberrypi/blob/master/uart01/uart01.c */
+	 
 	/* Disable UART0 */
 	//iomem_low(UART_CR, UART_CR_UARTEN);
 	
@@ -199,21 +203,22 @@ void init_miniuart()
 	
 	/* Remove pull resistors from UART pins (SoC manual at page 100-101) */
 	iomem(GPIO_GPPUD) &= 0u; /* 0b00 in order to remove pull resistors */
-	loop_delay(80);
+	loop_delay(80); /* Wait 150 clock cycle (loop_delay(1) takes more than 1 tick) */
 	iomem_high(GPIO_GPPUDCLK0, ((1<<GPIO_UART_TX) | (1<<GPIO_UART_RX)));
 	/* Bits set to 1 in GPIO_GPPUDCLK0/1 assume the pull-up/down state
 	 * defined in register GPPUD. Having set to 0 that register we want
 	 * to disable pull resistors from GPIO 14 and 15 */
-	loop_delay(80);
+	loop_delay(80); /* Wait 150 clock cycle (loop_delay(1) takes more than 1 tick) */
 	/* We should reset GPIO_GPPUD register, but it is already 0 */
 	iomem(GPIO_GPPUDCLK0) &= 0u; /* Now GPIO14 and 15 has taken requested state. Reset the register */
 	
 	iomem(AUX_MU_CNTL_REG) = AUX_MU_CNTL_RX | AUX_MU_CNTL_TX; /* Enable sending and receiving channel */
 	
+	/* Wait a bit until all buffers are flushed from previous operations (uboot) */
 	loop_delay(10000u);
 }
 
-/* Init memory periferals and then jump to entry() */
+/* Init memory peripherals and then jump to entry() */
 void _init()
 {
 	init_bss();
