@@ -79,7 +79,7 @@ $(COBJS): $(HFILES)
 
 # Generate tag file
 tags:
-		ctags -w -o tags `$(FIND) $(FINDFLAGS) $(TAG_SUBDIRS) -name '*.[chS]' -print`
+	ctags -w -o tags `$(FIND) $(FINDFLAGS) $(TAG_SUBDIRS) -name '*.[chS]' -print`
 
 # Don't delete these files if make get killed
 .PRECIOUS: %.elf
