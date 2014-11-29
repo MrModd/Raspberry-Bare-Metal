@@ -17,7 +17,9 @@
 ##########################################################################
 
 # Select all subdirectory
-SUBDIR = $(shell find . -mindepth 1 -maxdepth 1 -type d -not -path ./.git)
+SUBDIR = $(shell find . -mindepth 1 -maxdepth 1 -type d \
+			-not -path ./.git -not -path ./rpi-tools \
+			-not -path ./u-boot -not -path ./sd-card)
 
 # Compile every sudbirectory
 all:
