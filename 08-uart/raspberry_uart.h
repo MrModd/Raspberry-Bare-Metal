@@ -11,7 +11,7 @@
 /* UART (PL011) DEFINITIONS */
 
 /* Chapter 13 of the Broadcom SoC manual (pag. 175) */
-#define UART_BASE 0x20200100
+#define UART_BASE 0x20201000 /* SHAME ON YOU BROADCOM!!! HOW THE FUCK CAN YOU MISPELL AN ADDRESS??? */
 
 iomemdef(UART_DR, UART_BASE + 0x0); /* Data Register (controls the Transmit Holding Register) */
 iomemdef(UART_FR, UART_BASE + 0x18); /* Flag Register */
