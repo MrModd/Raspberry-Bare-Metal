@@ -25,3 +25,24 @@ variable.
 CROSS_COMPILE variable should contain just the prefix of the cross compiler,
 such as "arm-linux-gnueabi-".
 Follow instructions on http://elinux.org/RPi_U-Boot for a detailed explanation.
+
+## Preparing SD Card
+
+**get-boot-files.sh** is all you need to use to download GPU firmware files,
+official Raspberry cross compiler and u-boot. Just run the script and
+wait until all files are downloaded and u-boot get compiled. If no error
+occurred you will find a new **sd-card** folder with all and just the files
+you need to put in the SD Card in order to run u-boot.
+This script download u-boot git, if already present it tries to pull new
+commits. If no *CROSS_COMPILE* variable is set, it does the same with the
+compiler git.
+Note that you can use the downloaded repository as cross compiler for the
+projects too!
+
+## Launching programs
+
+If you have u-boot on your SD Card, you can load and run the programs directly
+from the serial interface. Read u-boot documentation on how to load files
+and use kermit, xmodem or similar to upload the .bin files.
+Remember to upload the program at the same address specified as memory start
+in .lds file.

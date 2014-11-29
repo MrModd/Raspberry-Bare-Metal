@@ -6,3 +6,7 @@
 *.lst
 *.sym
 tags
+
+/rpi-tools
+/u-boot
+/sd-card
