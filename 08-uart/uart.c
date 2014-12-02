@@ -3,9 +3,9 @@
 int putc_uart0(int ch)
 {
 	/* UART0 */
-	//while(!(iomem(UART_FR) & UART_FR_TXFE));
-	while(iomem(UART_FR) & UART_FR_TXFF);
-	iomem(UART_DR) |= ch & 0xff;
+	//while(!(iomem(UART_FR) & UART_FR_TXFE)); /* Wait until FIFO becomes empty */
+	while(iomem(UART_FR) & UART_FR_TXFF); /* Wait until FIFO becomes not full */
+	iomem(UART_DR) = ch & 0xff;
 	
 	return 1;
 }
@@ -13,7 +13,7 @@ int putc_uart0(int ch)
 int putc_uart1(int ch)
 {
 	/* UART1 */
-	while(!(iomem(AUX_MU_LSR_REG) & AUX_MU_LSR_TX_EMPTY));
+	while(!(iomem(AUX_MU_LSR_REG) & AUX_MU_LSR_TX_EMPTY)); /* Wait until FIFO can accept at least 1 byte */
 	iomem(AUX_MU_IO_REG) |= ch & 0xff;
 	
 	return 1;
@@ -21,7 +21,11 @@ int putc_uart1(int ch)
 
 int putc(int ch)
 {
+#ifdef MINI_UART
 	return putc_uart1(ch);
+#else
+	return putc_uart0(ch);
+#endif
 }
 
 int puts(const char *st)

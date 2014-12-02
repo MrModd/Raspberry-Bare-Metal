@@ -42,6 +42,8 @@ TAG_SUBDIRS := .
 FIND := find
 FINDFLAGS := -L
 
+DFLAGS:=
+
 
 
 all: $(TARGET).bin $(TARGET).lst $(TARGET).sym
@@ -63,11 +65,11 @@ $(COBJS): $(HFILES)
 
 # Generate objects file from C sources
 %.o: %.c 
-	$(CC) $(CFLAGS) $(CCARCHFLAGS) -c $<
+	$(CC) $(CFLAGS) $(CCARCHFLAGS) $(DFLAGS) -c $<
 
 # Generate assembly code from C sources
 %.s: %.c
-	$(CC) $(CFLAGS) $(CCARCHFLAGS) -S $<
+	$(CC) $(CFLAGS) $(CCARCHFLAGS) $(DFLAGS) -S $<
 
 # Generate a dump file of the disassembled binary code
 %.lst: %.elf
@@ -79,7 +81,10 @@ $(COBJS): $(HFILES)
 
 # Generate tag file
 tags:
-		ctags -w -o tags `$(FIND) $(FINDFLAGS) $(TAG_SUBDIRS) -name '*.[chS]' -print`
+	ctags -w -o tags `$(FIND) $(FINDFLAGS) $(TAG_SUBDIRS) -name '*.[chS]' -print`
+
+mini_uart: DFLAGS+=-D MINI_UART
+mini_uart: all
 
 # Don't delete these files if make get killed
 .PRECIOUS: %.elf
