@@ -50,17 +50,25 @@ iomemdef(AUX_MU_IO_REG, AUX_BASE + 0x40); /* Mini Uart I/O Data */
 iomemdef(AUX_MU_IER_REG, AUX_BASE + 0x44); /* Mini Uart Interrupt Enable */
 iomemdef(AUX_MU_IIR_REG, AUX_BASE + 0x48); /* Mini Uart Interrupt Identify */
 iomemdef(AUX_MU_LCR_REG, AUX_BASE + 0x4C); /* Mini Uart Line Control */
-iomemdef(AUX_MU_MCR_REG, AUX_BASE + 0x50); /* Mini Uart Modem Control */
 iomemdef(AUX_MU_LSR_REG, AUX_BASE + 0x54); /* Mini Uart Line Status */
 iomemdef(AUX_MU_CNTL_REG, AUX_BASE + 0x60); /* Mini Uart Extra Control */
+iomemdef(AUX_MU_STAT_REG, AUX_BASE + 0x64); /* Mini Uart Extra Status */
 iomemdef(AUX_MU_BAUD_REG, AUX_BASE + 0x68); /* Mini Uart Baudrate */
 
 /* AUX_ENABLES register (page 9) */
 #define AUX_EN_UART 1u /* bit 0: Mini UART enable */
 
+/* AUX_MU_LCR_REG (page 14)
+ * Check http://elinux.org/BCM2835_datasheet_errata#p14 for datasheet errata */
+#define AUX_MU_LCR_DATA_SIZE_MASK (3u) /* 00 for 7bit/symbol, 11 for 8bit/symbol */
+
 /* AUX_MU_LSR_REG register (page 15) */
-#define AUX_MU_LSR_TX_EMPTY 1u<<5 /* 1 if transmission FIFO can accept at least 1 byte */
+#define AUX_MU_LSR_TX_EMPTY (1u<<5) /* 1 if transmission FIFO can accept at least 1 byte */
 
 /* AUX_MU_CNTL register (page 16) */
 #define AUX_MU_CNTL_RX 1u /* bit 0: Receiver enable */
 #define AUX_MU_CNTL_TX (1u<<1) /* bit 1: Transmitter enable */
+
+/* AUX_MU_STAT_REG register (page 18) */
+#define AUX_MU_STAT_TX_EMPTY (1u<<8) /* 1 if transmission FIFO is empty */
+#define AUX_MU_STAT_TX_FULL (1u<<5) /* 1 if transmission FIFO is full */

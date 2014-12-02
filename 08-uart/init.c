@@ -181,18 +181,23 @@ void init_miniuart()
 	/* Examples:
 	 * https://github.com/dwelch67/raspberrypi/blob/master/uart01/uart01.c */
 	
-	/* Wait until previous transmissions end (uboot) */
-	while(iomem(UART_FR) & UART_FR_BUSY);
+	/* Wait until previous transmissions end (Uboot) */
+	while(!(iomem(UART_FR) & UART_FR_TXFE)); /* (Uboot uses UART0) */
 	 
 	/* Disable UART0 */
 	iomem_low(UART_CR, UART_CR_UARTEN);
 	
+	/* Set UART1 (mini UART) mode for GPIO14-15 */
+	GPIO_SET_FUNC(GPIO_GPFSEL1,GPIO_UART_TX_SEL_OFFSET,GPIO_ALT5_MASK)
+	GPIO_SET_FUNC(GPIO_GPFSEL1,GPIO_UART_RX_SEL_OFFSET,GPIO_ALT5_MASK)
+	
+	remove_pull_resistors_uart();
+	
 	iomem(AUX_ENABLES) = AUX_EN_UART;
 	iomem(AUX_MU_IER_REG) = 0; /* Disable interrupt */
-	iomem(AUX_MU_CNTL_REG) = 0; /* Reset UART configuration register */
-	iomem(AUX_MU_LCR_REG) = 3; /* Reset data format register (WHAT IS WRONG WITH THIS REGISTER?!?)*/
-	iomem(AUX_MU_MCR_REG) = 0; /* 'modem' signals (???) */
 	iomem(AUX_MU_IIR_REG) = 0; /* Disable interrupt */
+	iomem(AUX_MU_CNTL_REG) = 0; /* Reset UART configuration register */
+	iomem(AUX_MU_LCR_REG) = AUX_MU_LCR_DATA_SIZE_MASK; /* Reset data format register (SEE THE DATASHEET ERRATA)*/
 	/* baudrate = system_clock_freq / (8 * (baudrate_reg + 1))
 	 * baudrate_reg = (system_clock_freq / (8 * baudrate)) - 1
 	 * 
@@ -201,16 +206,10 @@ void init_miniuart()
 	 * 250000000/8/1152000 - 1 ~= 270 */
 	iomem(AUX_MU_BAUD_REG) = 270;
 	
-	/* Set UART1 (mini UART) mode for GPIO14-15 */
-	GPIO_SET_FUNC(GPIO_GPFSEL1,GPIO_UART_TX_SEL_OFFSET,GPIO_ALT5_MASK)
-	GPIO_SET_FUNC(GPIO_GPFSEL1,GPIO_UART_RX_SEL_OFFSET,GPIO_ALT5_MASK)
+	iomem_high(AUX_MU_CNTL_REG, AUX_MU_CNTL_TX | AUX_MU_CNTL_RX); /* Enable sending and receiving channel */
 	
-	remove_pull_resistors_uart();
-	
-	iomem(AUX_MU_CNTL_REG) = AUX_MU_CNTL_RX | AUX_MU_CNTL_TX; /* Enable sending and receiving channel */
-	
-	/* Wait a bit until all buffers are flushed from previous operations (uboot) */
-	loop_delay(10000u);
+	/* Wait a bit */
+	loop_delay(100u);
 }
 
 /* Init memory peripherals and then jump to entry() */
