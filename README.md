@@ -27,7 +27,7 @@ such as "arm-linux-gnueabi-".
 Follow instructions on http://elinux.org/RPi_U-Boot for a detailed explanation.
 
 From project *08-uart* it is possible to use **UART0** as well as **UART1**. Compile with
-"make" to compile for *UART0* or "make mini_uart" to use *UART1*.
+"make" to enable *UART0* or "make mini_uart" to use *UART1*.
 
 ## Preparing SD Card
 
