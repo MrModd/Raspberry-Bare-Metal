@@ -102,7 +102,7 @@
 #define COPROCESSOR_ACCESS_PRIVILEGED 0b01 /* Coprocessor enabled in Privileged mode */
 #define COPROCESSOR_ACCESS_USER 0b11 /* Coprocessor enabled in Privileged and User mode */
 
-/* Coprocessor Access Control Register (manuale ARM p. 3-51) */
+/* Coprocessor Access Control Register (ARM manual p. 3-51) */
  #define read_coprocessor_access_control_register() ({ \
 	u32 value; \
 	__asm__ __volatile__ ("mrc p15, 0, %[reg], c1, c0, 2" : [reg] "=r" (value) : : "memory"); \
@@ -111,7 +111,7 @@
 #define write_coprocessor_access_control_register(value) \
 	__asm__ __volatile__ ("mcr p15, 0, %[reg], c1, c0, 2" : : [reg] "r" (value) : "memory")
 
-/* FPEXC: Floating Point Exception Register (manuale ARM p. 20-16) */
+/* FPEXC: Floating Point Exception Register (ARM manual p. 20-16) */
 /* 30-th bit (0x40000000) of FPEXC register enables the VFP */
 #define enable_vfp() do { \
 	int dummy; \
