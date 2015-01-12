@@ -29,7 +29,7 @@ OBJCOPY=$(CROSS_COMPILE)objcopy
 OBJDUMP=$(CROSS_COMPILE)objdump
 # Alternatively: -O2 || -O3 -fno-tree-vectorize
 CFLAGS=-Wall -Wextra -O2 -ffreestanding
-ARCHFLAGS=-mcpu=arm1176jzf-s -march=armv6k -mfpu=vfp
+ARCHFLAGS=-mcpu=arm1176jzf-s -march=armv6zk -mfpu=vfp -mfloat-abi=hard
 CCARCHFLAGS=$(ARCHFLAGS) -marm
 CFILES:=$(shell ls *.c 2>/dev/null)
 SFILES:=$(shell ls *.S 2>/dev/null)
