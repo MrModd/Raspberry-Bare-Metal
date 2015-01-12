@@ -119,3 +119,11 @@
 						  "orr %0,%0,#0x40000000\n\t" \
 						  "fmxr fpexc,%0" : "=r" (dummy) : : ); \
 } while(0);
+
+
+
+/* ~~~~~~~~~~~~~ WFI ~~~~~~~~~~~~~~ */
+
+/* Wait For Interrupt (ARM manual p. 3-85)
+ * Put the processor into low power state until an interrupt event occurs */
+#define __wfi() __asm__ __volatile__ ("mcr p15, 0, %[dummy], c7, c0, 4" : : [dummy] "r" (0) : "memory")

@@ -94,5 +94,9 @@ void run_periodic_tasks(void)
 			best->job(best->arg); /* Execute the job */
 			best->released--;
 		}
+		else if (best == NULL)
+			/* If nothing to do put the CPU into
+			 * low power state until next timer interrupt */
+			__wfi();
 	}
 }
