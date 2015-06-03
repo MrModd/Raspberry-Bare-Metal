@@ -67,7 +67,7 @@ if [ ! $NEW ] ; then
 fi
 
 make distclean
-make rpi_b_defconfig
+make rpi_defconfig
 if [ $? != "0" ] ; then
 	echo -e "Error configuring uboot" >&2
 	exit 1
