@@ -20,8 +20,8 @@
 #error You should not include sub-header files
 #endif
 
-#define GPIO_LED 16
-#define GPIO_LED_SEL_OFFSET 18
+#define GPIO_LED 16 /* Bit in GPIO0 registers */
+#define GPIO_LED_SEL_OFFSET 18 /* Offset of the 3 bits in Function Select register */
 
 #define LED_ON GPIO0_SET_LOW(GPIO_LED)
 

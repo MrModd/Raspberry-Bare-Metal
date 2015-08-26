@@ -46,9 +46,11 @@
  */
 
 /* Data Synchronization Barrier (ARM manual p. 3-83) */
+/* Wait for the pipeline to be empty before execute next instruction */
 #define __synchronization_barrier() __asm__ __volatile__ ("mcr p15, 0, %[dummy], c7, c10, 4" : : [dummy] "r" (0) : "memory")
 
 /* Data Memory Barrier (ARM manual p. 3-84) */
+/* Finish all reads ad writes in memory before execute next instruction */
 #define __memory_barrier() __asm__ __volatile__ ("mcr p15, 0, %[dummy], c7, c10, 5" : : [dummy] "r" (0) : "memory")
 
 /* Explanation of MCR instruction:

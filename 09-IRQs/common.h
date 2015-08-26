@@ -94,11 +94,11 @@ static inline void delay_ticks(unsigned long d)
 static inline void delay_ms(unsigned long ms)
 {
 	/* We don't simply call delay_ticks(ms * HZ / 1000) because
-	 * we want this code is as short as possible. A function call
+	 * we want this code to be as short as possible. A function call
 	 * would cause saving and restoring registers on the stack */
 	unsigned long expire = (ms * HZ / 1000) + SYSTEM_TICKS;
 	while (time_before(SYSTEM_TICKS, expire))
 		; /* do nothing */
 }
 
-#define delay_s(seconds) delay_ms(seconds * 1000)
+#define delay_s(seconds) delay_ms((seconds) * 1000)

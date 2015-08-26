@@ -36,19 +36,29 @@ iomemdef(TIMER_CLEAR, TIMER_BASE + 0x40C); /* IRQ Clear/Ack (Write only) */
 iomemdef(TIMER_RAW_IRQ, TIMER_BASE + 0x410); /* RAW IRQ (Read Only) */
 iomemdef(TIMER_MASKED_IRQ, TIMER_BASE + 0x414); /* Masked IRQ (Read Only) */
 iomemdef(TIMER_RELOAD, TIMER_BASE + 0x418); /* Reload */
-iomemdef(TIMER_PRE_DIVIDER, TIMER_BASE + 0x41C); /* Pre-divider (Not in real 804!) */
-iomemdef(TIMER_COUNTER, TIMER_BASE + 0x420); /* Free running counter (Not in real 804!) */
+iomemdef(TIMER_PRE_DIVIDER, TIMER_BASE + 0x41C); /* Pre-divider (Not in real AP804!) */
+iomemdef(TIMER_COUNTER, TIMER_BASE + 0x420); /* Free running counter (Not in real AP804!) */
 
 #define TIMER_IRQ_LINE 0 /* This timer is wired to the IRQ BASIC line 0 */
 
+/* This board uses a timer based on an ARM AP804 timer module (see Broadcom SoC page 196).
+ * This module expects a clock source of 1MHz which it isn't present on the SoC. We use
+ * a pre-divider in order to take the main peripheral clock source, the APB (Advanced
+ * Peripheral BUS), rated at 250MHz by default and slow down at 1MHz.
+ * APB_CLOCK is the frequency of the core clock and TIMER_FREQ is the desired 1MHz frequency.
+ * TIMER_PRE_DIVIDER is the value to be set in the homonym register following this formula:
+ * 
+ *     timer_clock = apb_clock/(pre_divider+1)
+ * 
+ * as said in the manual (Broadcom SoC page 199), which means:
+ * 
+ *     pre_divider = (apb_clock / timer_clock) - 1
+ * 
+ */
 #define APB_CLOCK 250000000 /* Hz */
 #define TIMER_FREQ 1000000 /* Hz */
-/* Using Raspberry pre-divider to reduce core frequency:
- * apb_clock = 250MHz
- * timer_clock = 1MHz
- * timer_clock = apb_clock/(pre_divider+1) as said in the manual (Broadcom SoC page 199)
- * pre_divider = (apb_clock / timer_clock) - 1 */
-#define TIMER_PRE_DIVIDER ((unsigned long)(APB_CLOCK / TIMER_FREQ) + 1) /* To be set in TIMER_PRE_DIVIDER register */
+#define TIMER_PRE_DIVIDER ((unsigned long)(APB_CLOCK / TIMER_FREQ) - 1) /* To be set in TIMER_PRE_DIVIDER register */
+
 /* We want an interrupt assertion every 1/Hz seconds.
  * There's a register that get decremented every 1/TIMER_FREQ seconds
  * and when it reach 0 it asserts the timer IRQ line and initial
@@ -58,7 +68,7 @@ iomemdef(TIMER_COUNTER, TIMER_BASE + 0x420); /* Free running counter (Not in rea
  * set in the TIMER_LOAD register */
 #define TIMER_LOAD_VALUE ((unsigned long)(TIMER_FREQ / HZ)) /* Value to reload in the timer register */
 
-/* Control register (page 197) */
+/* Control register (Broadcom SoC manual page 197) */
 #define TIMER_CTLR_32BIT_COUNTER (1u<<1) /* Broadcom manual says this bit is for 23bit counter... That's not true! */
 #define TIMER_CTLR_PRESCALE_16 (1u<<2)
 #define TIMER_CTLR_PRESCALE_256 (2u<<2)

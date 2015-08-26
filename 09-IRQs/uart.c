@@ -37,14 +37,11 @@ int putc_uart1(int ch)
 	return 1;
 }
 
-int putc(int ch)
-{
 #ifdef MINI_UART
-	return putc_uart1(ch);
+#define putc(ch)	putc_uart1(ch)
 #else
-	return putc_uart0(ch);
+#define putc(ch)	putc_uart0(ch)
 #endif
-}
 
 int puts(const char *st)
 {
@@ -82,9 +79,9 @@ int puth(unsigned long v) /* Write a number in hexadecimal notation */
 int putu(unsigned long v)
 {
 	/* Dividing every time by 10 we can read digit per digit, but we need a buffer in order to accumulate discovered
-	 * ciphers that will be printed in inverse order */
+	 * digits that will be printed in inverse order */
 	
-	/* A 32bit number can contains up to 10 ciphers, considering the trailing line we need an 11 positions length buffer */
+	/* A 32bit number can contains up to 10 digits, considering the trailing line we need an 11 positions length buffer */
 	char buf[11];
 	int i, r;
 	if (v < 10) {
@@ -116,7 +113,7 @@ int putd(long v)
 }
 
 /* Floating point numbers */
-int putf(double v, int prec /* How many decimal ciphers to print */)
+int putf(double v, int prec /* How many decimal digits to print */)
 {
 	int i, w = 0;
 	if (v < 0.0) {

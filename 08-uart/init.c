@@ -54,7 +54,7 @@ void init_vectors(void)
 	vectors[14] = (u32) panic0;	/* IRQ */
 	vectors[15] = (u32) panic0;	/* FIQ */
 	
-	/* Set base address of the exception vector (manuale ARM p. 3-121) */
+	/* Set base address of the exception vector (ARM manual p. 3-121) */
 	__asm__ __volatile__ ("mcr p15, 0, %[addr], c12, c0, 0" : : [addr] "r" (vectors));
 	/* For a description of mcr instruction and extended assembly see
 	 * raspberry_cpu.h header file.
@@ -75,7 +75,7 @@ void init_vfp()
 	write_coprocessor_access_control_register(acr);
 	__memory_barrier();
 	
-	enable_vfp()
+	enable_vfp();
 }
 
 /* Init to 0 section .bss, where static variables that

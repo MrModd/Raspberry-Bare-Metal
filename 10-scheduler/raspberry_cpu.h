@@ -48,9 +48,11 @@
 /* ~~~~~~~~ MEMORY BARRIER ~~~~~~~~ */
 
 /* Data Synchronization Barrier (ARM manual p. 3-83) */
+/* Wait for the pipeline to be empty before execute next instruction */
 #define __synchronization_barrier() __asm__ __volatile__ ("mcr p15, 0, %[dummy], c7, c10, 4" : : [dummy] "r" (0) : "memory")
 
 /* Data Memory Barrier (ARM manual p. 3-84) */
+/* Finish all reads ad writes in memory before execute next instruction */
 #define __memory_barrier() __asm__ __volatile__ ("mcr p15, 0, %[dummy], c7, c10, 5" : : [dummy] "r" (0) : "memory")
 
 /* Explanation of MCR instruction:
@@ -103,7 +105,7 @@
 #define COPROCESSOR_ACCESS_USER 0b11 /* Coprocessor enabled in Privileged and User mode */
 
 /* Coprocessor Access Control Register (ARM manual p. 3-51) */
- #define read_coprocessor_access_control_register() ({ \
+#define read_coprocessor_access_control_register() ({ \
 	u32 value; \
 	__asm__ __volatile__ ("mrc p15, 0, %[reg], c1, c0, 2" : [reg] "=r" (value) : : "memory"); \
 	value; })
@@ -118,7 +120,7 @@
 	__asm__ __volatile__ ("fmrx %0,fpexc\n\t" \
 						  "orr %0,%0,#0x40000000\n\t" \
 						  "fmxr fpexc,%0" : "=r" (dummy) : : ); \
-} while(0);
+} while(0)
 
 
 

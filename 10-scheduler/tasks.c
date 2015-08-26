@@ -31,7 +31,14 @@ void init_taskset(void)
 		taskset[i].valid = 0;
 }
 
-/* Add a new task to the taskset */
+/* Add a new task to the taskset
+ * @job: the job to be released by this task
+ * @arg: data of the function call
+ * @period: time between two releases
+ * @delay: initial delay before the firse release (task phase)
+ * @priority: value in [0, MAXUINT] (0 := max priority)
+ * @name: name description for this task
+ */
 int create_task(job_t job, void *arg, unsigned long period,
 		unsigned long delay, unsigned long priority,
 		const char *name)

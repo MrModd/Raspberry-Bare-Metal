@@ -70,7 +70,7 @@ static const u32 const LEV0[] = {GPIO_GPSET0, GPIO_GPCLR0};
 /* Meaning of the macro:
  * from register GPIO_GPLEV0 read the N-th bit, clearing all other bits and shifting the N-th bit
  * to 0 position;
- * it the bit is 0, then it must be set to 1 using the GPIO_GPSET0 register, vice versa it must
+ * if the bit is 0, then it must be set to 1 using the GPIO_GPSET0 register, vice versa it must
  * be cleared (se to 0) using the GPIO_GPCLR0 register.
  * Location 0 of array LEV0 is the address of GPIO_GPSET0 register, so LEV0[0] returns the address of
  * the register required to set the bit to 1, vice versa LEV0[1] returns the address of the register

@@ -28,7 +28,7 @@
 #define IRQ_1_LINES 32 /* GPU interrupt lines register 1*/
 #define IRQ_2_LINES 32 /* GPU interrupt lines register 2 */
 #define IRQ_BASIC_LINES 20 /* ARM interrupt lines (other bits are for some GPU interrupt lines
-                            * already present in other two registers) */
+                            * already present in the other two registers) */
 
 /* IRQ registers as offset of IRQ_BASE (Broadcom manual p. 112) */
 iomemdef(IRQ_BASIC_PENDING, IRQ_BASE + 0x200);

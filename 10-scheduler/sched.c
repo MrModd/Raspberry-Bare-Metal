@@ -27,7 +27,7 @@ void check_periodic_tasks(void)
 	struct task *f;
 	int i;
 	
-	for (i=0, f=taskset; i<active_tasks; ++f) {
+	for (i=0, f=taskset /* Defined in tasks.c */; i<active_tasks; ++f) {
 		
 		/* This job is not active */
 		if (!f->valid)
