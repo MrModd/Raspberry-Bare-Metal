@@ -19,7 +19,7 @@ if [ ! $CROSS_COMPILER ] ; then
 	if [ ! -d rpi-tools/ ] ; then
 		git clone git://github.com/raspberrypi/tools rpi-tools
 		if [ $? != "0" ] ; then
-			echo -e "Cannot clone repository" >&2
+			echo -e "Cannot clone repository." >&2
 			exit 1
 		fi
 		
@@ -28,7 +28,7 @@ if [ ! $CROSS_COMPILER ] ; then
 		cd rpi-tools
 		git pull
 		if [ $? != "0" ] ; then
-			echo -e "Cannot pull repository" >&2
+			echo -e "Cannot pull repository." >&2
 			exit 1
 		fi
 		
@@ -49,7 +49,7 @@ NEW=""
 if [ ! -d u-boot/ ] ; then
 	git clone git://git.denx.de/u-boot.git
 	if [ $? != "0" ] ; then
-		echo -e "Cannot clone repository" >&2
+		echo -e "Cannot clone repository." >&2
 		exit 1
 	fi
 	
@@ -61,7 +61,7 @@ cd u-boot/
 if [ ! $NEW ] ; then
 	git pull
 	if [ $? != "0" ] ; then
-		echo -e "Cannot pull repository" >&2
+		echo -e "Cannot pull repository." >&2
 		exit 1
 	fi
 fi
@@ -69,13 +69,13 @@ fi
 make distclean
 make rpi_defconfig
 if [ $? != "0" ] ; then
-	echo -e "Error configuring uboot" >&2
+	echo -e "Error configuring uboot." >&2
 	exit 1
 fi
 
 make -j$(grep -c ^processor /proc/cpuinfo) -s
 if [ $? != "0" ] ; then
-	echo -e "Error compiling uboot" >&2
+	echo -e "Error compiling uboot." >&2
 	exit 1
 fi
 
@@ -87,18 +87,46 @@ echo "Copying files into folder..."
 
 mkdir -p sd-card/
 if [ $? != "0" ] ; then
-	echo -e "Cannot create output directory" >&2
+	echo -e "Cannot create output directory." >&2
 	exit 1
 fi
 
 cd sd-card/
 cp ../u-boot/u-boot.bin ./kernel.img
 wget https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin -O bootcode.bin
+if [ $? != "0" ] ; then
+	echo -e "Cannot download bootcode.bin." >&2
+	exit 1
+fi
 wget https://github.com/raspberrypi/firmware/raw/master/boot/fixup.dat -O fixup.dat
+if [ $? != "0" ] ; then
+	echo -e "Cannot download fixup.dat." >&2
+	exit 1
+fi
 wget https://github.com/raspberrypi/firmware/raw/master/boot/fixup_cd.dat -O fixup_cd.dat
+if [ $? != "0" ] ; then
+	echo -e "Cannot download fixup_cd.dat." >&2
+	exit 1
+fi
 wget https://github.com/raspberrypi/firmware/raw/master/boot/fixup_x.dat -O fixup_x.dat
+if [ $? != "0" ] ; then
+	echo -e "Cannot download fixup_x.dat." >&2
+	exit 1
+fi
 wget https://github.com/raspberrypi/firmware/raw/master/boot/start.elf -O start.elf
+if [ $? != "0" ] ; then
+	echo -e "Cannot download start.elf." >&2
+	exit 1
+fi
 wget https://github.com/raspberrypi/firmware/raw/master/boot/start_cd.elf -O start_cd.elf
+if [ $? != "0" ] ; then
+	echo -e "Cannot download start_cd.elf." >&2
+	exit 1
+fi
 wget https://github.com/raspberrypi/firmware/raw/master/boot/start_x.elf -O start_x.elf
+if [ $? != "0" ] ; then
+	echo -e "Cannot download start_x.elf." >&2
+	exit 1
+fi
 
 echo -e "\n\nDONE!"
