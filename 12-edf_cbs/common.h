@@ -59,13 +59,13 @@ struct task {
 	
 	unsigned long period;           /* Periodicity of the release time of a job */
 	union {
-		unsigned long priority;     /* If FPR: priority in respect of other tasks.
-	                                 * Max priority is 0, min is MAXUINT. */
-	    unsigned long abs_deadline; /* If EDF or CBS: absolute deadline for this job. */
+		unsigned long priority;       /* If FPR: priority in respect of other tasks.
+		                               * Max priority is 0, min is MAXUINT. */
+		unsigned long abs_deadline;   /* If EDF or CBS: absolute deadline for this job. */
 	};
 	union {
-		unsigned long rel_deadline; /* If EDF: relative deadline for this job. */
-		unsigned long max_budget;   /* If CBS: max budget. */
+		unsigned long rel_deadline;   /* If EDF: relative deadline for this job. */
+		unsigned long max_budget;     /* If CBS: max budget. */
 	};
 	unsigned long budget;           /* 0 for FPR and EDF task or current budget for CBS task */
 	const char *name;               /* Just for debug: string that defines a name for this task */
