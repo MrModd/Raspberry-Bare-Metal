@@ -76,16 +76,16 @@ void activate_cbs_worker(struct cbs_queue *q, int wid)
 		 *       where p is the period of the server
 		 * 
 		 * Remember that:
-		 *   - t->priority is the absolute deadline of the EDF task (hosting the CBS server)
-		 *   - t->deadline is the max budget for the EDF server
+		 *   - t->abs_deadline is the absolute deadline of the EDF task (hosting the CBS server)
+		 *   - t->max_budget is the max budget for the EDF server
 		 *   - t->period is the period of the task and reload period of the CBS server
 		 *   - t->budget is the current budget
 		 */
-		u32 pd = t->priority * t->deadline;
-		u32 tdbp = SYSTEM_TICKS * t->deadline + t->budget * t->period;
+		u32 pd = t->abs_deadline * t->max_budget;
+		u32 tdbp = SYSTEM_TICKS * t->max_budget + t->budget * t->period;
 		if (tdbp >= pd) {
-			t->priority = SYSTEM_TICKS + t->period;
-			t->budget = t->deadline;
+			t->abs_deadline = SYSTEM_TICKS + t->period;
+			t->budget = t->max_budget;
 			trigger_schedule = 1; /* Need to reschedule because priority changed */
 			++globalreleases;
 		}
@@ -104,8 +104,8 @@ void decrease_cbs_budget(struct task *t)
 	if (t->budget > 0)
 		return;
 	/* Budget reached 0, reload and postpone the deadline */
-	t->budget = t->deadline;
-	t->priority += t->period;
+	t->budget = t->max_budget;
+	t->abs_deadline += t->period;
 	
 	trigger_schedule = 1; /* Need to reschedule because priority changed */
 }

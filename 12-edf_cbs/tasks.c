@@ -67,7 +67,7 @@ void task_entry_point(struct task *t)
 		--t->released;
 		
 		/* If this is a EDF task, update its deadline */
-		if (t->deadline != 0 && t->budget == 0) {
+		if (t->rel_deadline != 0 && t->budget == 0) {
 			/* t->priority contains the absolute deadline of this job */
 			if (time_after(SYSTEM_TICKS, t->priority)) {
 				puts("Job of EDF task '");
@@ -76,7 +76,7 @@ void task_entry_point(struct task *t)
 			}
 			/* Prepare the deadline for next job (note that it's possible that it
 			 * hasn't been released yet) */
-			t->priority += t->period;
+			t->abs_deadline += t->period;
 		}
 		
 		/* This job ended its execution, so no other work can be done
@@ -196,18 +196,18 @@ int create_task(job_t job, void *arg, unsigned long period,
 	if (type == EDF) {
 		if (prio_dead == 0)
 			return -1;
-		t->priority = prio_dead + t->releasetime; /* Priority is the absolute deadline */
-		t->deadline = prio_dead; /* Relative deadline */
+		t->abs_deadline = prio_dead + t->releasetime; /* Priority is the absolute deadline */
+		t->rel_deadline = prio_dead; /* Relative deadline */
 	}
 	else if (type == CBS) {
-		t->priority = 0; /* Initial deadline set to 0 (no jobs are released yet) */
-		t->deadline = prio_dead; /* Maximum budget for the server */
+		t->abs_deadline = 0; /* Initial deadline set to 0 (no jobs are released yet) */
+		t->max_budget = prio_dead; /* Maximum budget for the server */
 		t->budget = prio_dead; /* Initial budget set to max */
 		
 	}
 	else { /* FPR */
 		t->priority = prio_dead; /* Priority is a fixed value */
-		t->deadline = 0; /* Unused */
+		t->rel_deadline = 0; /* Unused */
 	}
 	/* If t->deadline == 0 then fixed priority task
 	 * if t->deadline != 0 then dynamic priority task */

@@ -46,34 +46,39 @@ enum task_type {
 /* This is a task.
  * Each istance of this data struct represent a released job. */
 struct task {
-	int valid; /* 1 if this task is enabled */
-	job_t job; /* Pointer to the job function */
-	void *arg; /* Argument for the job function call */
-	unsigned long releasetime; /* Tick of the next release of a job for this task */
+	int valid;                      /* 1 if this task is enabled */
+	job_t job;                      /* Pointer to the job function */
+	void *arg;                      /* Argument for the job function call */
+	unsigned long releasetime;      /* Tick of the next release of a job for this task */
 	/* Since this defines a periodic task, releasetime is set to releasetime + period
 	 * at each release */
 	
-	unsigned long released; /* How many job were released and not yet executed.
-	                         * For CBS server this is the sum of pending jobs of
-	                         * all types of workers. */
+	unsigned long released;         /* How many job were released and not yet executed.
+	                                 * For CBS server this is the sum of pending jobs of
+	                                 * all types of workers. */
 	
-	unsigned long period; /* Periodicity of the release time of a job */
-	unsigned long priority; /* If FPR priority in respect of other tasks.
-	                         * Max priority is 0, min is MAXUINT.
-	                         * If EDF or CBS absolute deadline for this job. */
-	unsigned long deadline; /* Relative deadline for this job if EDF or max budget if CBS */
-	unsigned long budget; /* 0 for FPR and EDF task or current budget for CBS task */
-	const char *name; /* Just for debug: string that defines a name for this task */
+	unsigned long period;           /* Periodicity of the release time of a job */
+	union {
+		unsigned long priority;     /* If FPR: priority in respect of other tasks.
+	                                 * Max priority is 0, min is MAXUINT. */
+	    unsigned long abs_deadline; /* If EDF or CBS: absolute deadline for this job. */
+	};
+	union {
+		unsigned long rel_deadline; /* If EDF: relative deadline for this job. */
+		unsigned long max_budget;   /* If CBS: max budget. */
+	};
+	unsigned long budget;           /* 0 for FPR and EDF task or current budget for CBS task */
+	const char *name;               /* Just for debug: string that defines a name for this task */
 	
-	unsigned long sp; /* Stack pointer for the task */
-	unsigned long regs[8]; /* Registers not saved by the interrupt handler: r4-r11 */
+	unsigned long sp;               /* Stack pointer for the task */
+	unsigned long regs[8];          /* Registers not saved by the interrupt handler: r4-r11 */
 };
 
 /* CBS data structure */
 #define MAX_NUM_WORKERS 8
 struct cbs_queue {
 	struct task *task;
-	int num_workers; /* Number of types of aperiodic jobs that this serve can handle */
+	int num_workers;                /* Number of types of aperiodic jobs that this serve can handle */
 	
 	/* Each type of aperiodic job runs a different function */
 	job_t workers[MAX_NUM_WORKERS];

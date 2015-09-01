@@ -33,7 +33,7 @@ void check_periodic_tasks(void)
 		
 		/* If f exceded taskset[MAX_NUM_TASKS] means that active_tasks
 		 * had a value greater than the real number of active tasks */
-		if (f-taskset > MAX_NUM_TASKS)
+		if (f - taskset > MAX_NUM_TASKS)
 			_panic(__FILE__, __LINE__, "More active tasks than total tasks! Value of active_tasks must be wrong.");
 		
 		/* This job is not active */
@@ -43,7 +43,7 @@ void check_periodic_tasks(void)
 		if (time_after_eq(now, f->releasetime)) {
 			f->releasetime += f->period; /* Update next release time */
 			if (f->budget) { /* CBS server */
-				f->budget = f->deadline; /* Reload the budget */
+				f->budget = f->max_budget; /* Reload the budget */
 			}
 			else {
 				++f->released; /* f->released += 1; */
@@ -82,20 +82,20 @@ static inline struct task *select_best_task(void)
 			continue;
 		
 		if (edf) {
-			if (f->deadline == 0)
+			if (f->rel_deadline == 0)
 				/* This is a fixed priority task, but dynamic tasks has higher priority */
 				continue;
 			if (time_before(f->priority, maxprio)) {
-				maxprio = f->priority;
+				maxprio = f->abs_deadline;
 				best = f;
 			}
 		}
 		else {
 			/* No dynamic task found until now */
-			if (f->deadline != 0) {
+			if (f->rel_deadline != 0) {
 				/* This is a dynamic task */
 				edf = 1;
-				maxprio = f->priority;
+				maxprio = f->abs_deadline;
 				best = f;
 				continue;
 			}
