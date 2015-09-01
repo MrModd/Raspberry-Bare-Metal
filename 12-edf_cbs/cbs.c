@@ -59,7 +59,7 @@ void activate_cbs_worker(struct cbs_queue *q, int wid)
 	struct task *t = q->task;
 	
 	if (wid >= q->num_workers)
-		panic0();
+		_panic(__FILE__, __LINE__, "Invalid worker ID.");
 	
 	irq_disable();
 	q->pending[wid]++;

@@ -50,7 +50,7 @@ static void cbs_worker(void *arg)
 	puts("\n");
 	
 	/* Wasting time... */
-	delay_ms(2500);
+	delay_ms(2000);
 }
 
 static void led_cycle(void *arg __attribute__((unused)))
@@ -83,8 +83,7 @@ void entry(void)
 	welcome();
 	
 	if (add_cbs_worker(&cbs0, cbs_worker, &cbs0) == -1) {
-		puts("ERROR: cannot create a worker for the CBS server\n");
-		panic0();
+		_panic(__FILE__, __LINE__, "Cannot create a worker for the CBS server.");
 	}
 	
 	if (create_task(led_cycle,
@@ -94,8 +93,7 @@ void entry(void)
 			get_ticks_in_sec(2),    /* Relative deadline: 2 seconds apart from release time */
 			EDF,                    /* Earliest Deadline First */
 			"led_cycle") == -1) {
-		puts("ERROR: cannot create task led_cycle\n");
-		panic0();
+		_panic(__FILE__, __LINE__, "Cannot create task led_cycle.");
 	}
 	
 	if (create_task(show_ticks,
@@ -105,8 +103,7 @@ void entry(void)
 			get_ticks_in_sec(1),    /* Relative deadline: 1 second apart from release time */
 			EDF,                    /* Earliest Deadline First */
 			"show_ticks") == -1) {
-		puts("ERROR: cannot create task show_ticks\n");
-		panic0();
+		_panic(__FILE__, __LINE__, "Cannot create task show_ticks.");
 	}
 	
 	/* This is the task 0, those that the scheduler runs when no other tasks are eligible.

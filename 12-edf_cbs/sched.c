@@ -34,7 +34,7 @@ void check_periodic_tasks(void)
 		/* If f exceded taskset[MAX_NUM_TASKS] means that active_tasks
 		 * had a value greater than the real number of active tasks */
 		if (f-taskset > MAX_NUM_TASKS)
-			panic0();
+			_panic(__FILE__, __LINE__, "More active tasks than total tasks! Value of active_tasks must be wrong.");
 		
 		/* This job is not active */
 		if (!f->valid)
@@ -70,7 +70,7 @@ static inline struct task *select_best_task(void)
 		/* If f exceded taskset[MAX_NUM_TASKS] means that active_tasks
 		 * had a value greater than the real number of active tasks */
 		if (f - taskset > MAX_NUM_TASKS)
-			panic0();
+			_panic(__FILE__, __LINE__, "More active tasks than total tasks! Value of active_tasks must be wrong.");
 		
 		if (!f->valid)
 			continue;

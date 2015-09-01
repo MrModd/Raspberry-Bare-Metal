@@ -18,6 +18,32 @@
 
 #include "raspberry.h"
 
+/* System panic function.
+ * Print an error message and halt the system.
+ * @file: the file where the panic happened (use __FILE__ macro)
+ * @line: the line number in the file (use __LINE__ macro)
+ * @msg: a message that will be printed on the serial before panic
+ */
+inline void _panic(const char *file, int line, const char *msg)
+{
+	irq_disable();
+	puts("\n\nPANIC!\n");
+	puts(file);
+	puts(":");
+	putd(line);
+	puts(": ");
+	puts(msg);
+	for(;;) {
+		LED_ON
+		loop_delay(5000000u);
+		LED_OFF
+		loop_delay(10000000u);
+	}
+}
+
+/* Next panic functions should be called just by the hardware.
+ * See the exception vector in init.c */
+
 void panic0(void)
 {
 	for(;;) {

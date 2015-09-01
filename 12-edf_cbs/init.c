@@ -53,7 +53,7 @@ void init_vectors(void)
 	vectors[12] = (u32) panic3;	/* Data Abort */
 	vectors[13] = (u32) panic4;	/* Reserved */
 	vectors[14] = (u32) _irq_handler;	/* IRQ */
-	vectors[15] = (u32) panic0;	/* FIQ */
+	vectors[15] = (u32) panic4;	/* FIQ */
 	
 	/* Set base address of the exception vector (ARM manual p. 3-121) */
 	__asm__ __volatile__ ("mcr p15, 0, %[addr], c12, c0, 0" : : [addr] "r" (vectors));
@@ -249,7 +249,7 @@ void _init()
 	 * Maximum budget 25 unit time (ticks) per period
 	 * Period of 250 ticks. */
 	if (init_cbs(25, 250, &cbs0, "cbs0") == -1) /* Create a task for the CBS server */
-		panic0();
+		_panic(__FILE__, __LINE__, "Cannot create CBS server task.");
 	
 	/* Prevent code reordering (just in case) */
 	__memory_barrier();

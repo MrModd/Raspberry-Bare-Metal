@@ -59,7 +59,7 @@ void task_entry_point(struct task *t)
 			/* If scheduler selected this task for execution, but
 			 * ther're no job released, then select_best_task() did
 			 * something wrong. */
-			panic0();
+			_panic(__FILE__, __LINE__, "select_best_task() returned the wrong task to run.");
 		
 		irq_enable();
 		t->job(t->arg); /* Run the job for this task */

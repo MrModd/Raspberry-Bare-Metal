@@ -50,7 +50,7 @@ void _bsp_irq(void)
 				 * to this interrupt (if set) */
 				handler = ISR_BASIC_IRQ[i];
 				if (!handler)
-					panic0();
+					_panic(__FILE__, __LINE__, "No handler for the received IRQ.");
 				handler();
 				__synchronization_barrier();
 			}
@@ -69,7 +69,7 @@ void _bsp_irq(void)
 				 * to this interrupt (if set) */
 				handler = ISR_IRQ1[i];
 				if (!handler)
-					panic0();
+					_panic(__FILE__, __LINE__, "No handler for the received IRQ.");
 				handler();
 				__synchronization_barrier();
 			}
@@ -88,7 +88,7 @@ void _bsp_irq(void)
 				 * to this interrupt (if set) */
 				handler = ISR_IRQ2[i];
 				if (!handler)
-					panic0();
+					_panic(__FILE__, __LINE__, "No handler for the received IRQ.");
 				handler();
 				__synchronization_barrier();
 			}

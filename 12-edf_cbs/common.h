@@ -99,6 +99,7 @@ extern struct cbs_queue cbs0; /* The only CBS server this program uses */
 extern void entry(void);
 
 /* Declaration of other functions that may be used somewhere from the program */
+extern inline void _panic(const char *, int, const char *);
 extern void panic0(void);
 extern void panic1(void);
 extern void panic2(void);
