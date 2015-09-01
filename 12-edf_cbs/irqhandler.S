@@ -30,6 +30,35 @@
 	.code 32
 	.globl _irq_handler
 
+/* Description of registers:
+ * 
+ * +--+--+--+--+--+--+--+--+--+--+---+---+---+---+---+---+----+----+
+ * |r0|r1|r2|r3|r4|r5|r6|r7|r8|r9|r10|r11|r12|r13|r14|r15|cpsr|spsr|
+ * |  |  |  |  |  |  |  |  |  |  |   |   |   |sp |lr |pc |    |    |
+ * +--+--+--+--+--+--+--+--+--+--+---+---+---+---+---+---+----+----+
+ *                                             ^   ^   ^        ^
+ * 
+ * Those with a ^ underneath are private for the execution mode, that
+ * means that they are different when executing in IRQ mode or SYSTEM
+ * mode. In example sp register can assume two different values accessible
+ * alternately when in IRQ or in SYSTEM mode.
+ * 
+ * AAPCS-clobbered registers are those that "by convention" should not be
+ * preserved during a C function invocation. If this function want to
+ * overwrite these registers it can do that. It is the assembly code
+ * (this IRQ handler in this case) that must save their values on the
+ * stack before jumping to the C function.
+ * On the other hand the non AAPCS-clobbered registers are those that
+ * during the execution of a C function should not be overwritten.
+ * The C code must save their values before use them and it must
+ * restore their original value before returning to the assembly
+ * procedure.
+ * With ARM AAPCS the clobbered registers are {r0-r3,r12,r14/lr}; instead
+ * those registers that the C function must preserve are {r4-r11}.
+ * 
+ * _irq_handler below saves those AAPCS-clobbered registers on the stack,
+ * jumps to the high level ISR routine and then restore them. */
+
 /* Low-level interrupt handler function */
 _irq_handler:
 
@@ -77,10 +106,16 @@ _irq_handler:
 .Lnosched:
 	
 	ldmfd sp, {r0-r3, r12, lr}^			/* unstack all saved SYSTEM registers
-										 * "^" here means: use SYSTEM/USER registers */
+										 * "^" here means: use SYSTEM/USER registers.
+										 * We are in IRQ mode, but the lr register will
+										 * be saved in the SYSTEM mode equivalent
+										 * register. */
 	nop									/* can't access banked registers immediately */
 	ldr lr,[sp, #(6*4)]					/* load return address from the stack */
-	movs pc, lr							/* return restoring cpsr from spsr */
+	movs pc, lr							/* jump back to what was running before entering
+	                                     * the interrupt handler, but before that restore
+	                                     * SPSR register (of the IRQ mode) to the CPSR
+	                                     * position */
 
 /* End of _irq_handler */
 

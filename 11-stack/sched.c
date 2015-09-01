@@ -161,4 +161,4 @@ void _switch_to(struct task *to)
 
 /* It's important to check the assembly generated in order to determine if the
  * compiler used some registers _switch_to() is going to save. Registers r4 to
- * r11 should compare only within the stmia and ldmia instructions. */
+ * r11 should appear only within the stmia and ldmia instructions. */
