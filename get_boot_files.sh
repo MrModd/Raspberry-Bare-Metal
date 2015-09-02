@@ -15,7 +15,7 @@ echo "Getting cross compiler..."
 
 NEW=""
 
-if [ ! $CROSS_COMPILER ] ; then
+if [ ! $CROSS_COMPILE ] ; then
 	if [ ! -d rpi-tools/ ] ; then
 		git clone git://github.com/raspberrypi/tools rpi-tools
 		if [ $? != "0" ] ; then
