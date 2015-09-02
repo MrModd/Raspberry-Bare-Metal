@@ -2,7 +2,7 @@
 
 ## License
 
-Copyright (C) 2014  Federico "MrModd" Cosentino (http://mrmodd.it/)
+Copyright (C) 2014-2015 Federico "MrModd" Cosentino (http://mrmodd.it/)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,12 +17,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+This project is inspired by an academic course taught by Dott. Marco
+Cesati (Understanding The Linux Kernel) from the University of Rome
+Tor Vergata.
+
 ## Compiling notes
 
 There's a Makefile in the top level folder that compiles every project.
 Before using *make* command you must export **CROSS_COMPILE** environment
 variable.
-CROSS_COMPILE variable should contain just the prefix of the cross compiler,
+*CROSS_COMPILE* variable should contain just the prefix of the actual binaries,
 such as "arm-linux-gnueabi-".
 Follow instructions on http://elinux.org/RPi_U-Boot for a detailed explanation.
 
@@ -45,7 +49,9 @@ projects too!
 ## Launching programs
 
 If you have u-boot on your SD Card, you can load and run the programs directly
-from the serial interface. Read u-boot documentation on how to load files
-and use kermit, xmodem or similar to upload the .bin files.
-Remember to upload the program at the same address specified as memory start
+from the serial interface. Read u-boot documentation on how to upload files
+using kermit, xmodem or similar.
+Remember to upload the program at the same address specified as *mem_start*
 in .lds file.
+You can also directly put the .bin file on the SD Card renaming it as **kernel.img**.
+This will substitute uboot.

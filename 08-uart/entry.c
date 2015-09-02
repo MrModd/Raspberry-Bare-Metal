@@ -1,6 +1,6 @@
 /*
  * Raspberry Bare Metal
- * Copyright (C) 2014  Federico "MrModd" Cosentino (http://mrmodd.it/)
+ * Copyright (C) 2014-2015 Federico "MrModd" Cosentino (http://mrmodd.it/)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,15 +20,15 @@
 
 void welcome(void)
 {
-	puts("\n===================================================================\n");
-	puts("     ____      _    ____  ____  ____  _____ ____  ______   __\n");
-	puts("    |  _ \\    / \\  / ___||  _ \\| __ )| ____|  _ \\|  _ \\ \\ / /\n");
-	puts("    | |_) |  / _ \\ \\___ \\| |_) |  _ \\|  _| | |_) | |_) \\ V / \n");
-	puts("    |  _ <  / ___ \\ ___) |  __/| |_) | |___|  _ <|  _ < | |  \n");
-	puts("    |_| \\_\\/_/   \\_\\____/|_|   |____/|_____|_| \\_\\_| \\_\\|_|  \n");
-	puts("                                                  Bare Metal \n\n");
-	puts("Copyright (C) 2014  Federico \"MrModd\" Cosentino (http://mrmodd.it/)\n");
-	puts("===================================================================\n\n");
+	puts("\n=======================================================================\n");
+	puts("       ____      _    ____  ____  ____  _____ ____  ______   __\n");
+	puts("      |  _ \\    / \\  / ___||  _ \\| __ )| ____|  _ \\|  _ \\ \\ / /\n");
+	puts("      | |_) |  / _ \\ \\___ \\| |_) |  _ \\|  _| | |_) | |_) \\ V / \n");
+	puts("      |  _ <  / ___ \\ ___) |  __/| |_) | |___|  _ <|  _ < | |  \n");
+	puts("      |_| \\_\\/_/   \\_\\____/|_|   |____/|_____|_| \\_\\_| \\_\\|_|  \n");
+	puts("                                                    Bare Metal \n\n");
+	puts("Copyright (C) 2014-2015 Federico \"MrModd\" Cosentino (http://mrmodd.it/)\n");
+	puts("=======================================================================\n\n");
 }
 
 void entry(void)
