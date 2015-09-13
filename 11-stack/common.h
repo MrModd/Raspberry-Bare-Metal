@@ -132,7 +132,7 @@ static inline void delay_ticks(unsigned long d)
 	 * In order to consider always the correct difference of time,
 	 * we must use a signed value comparison. */
 	while (time_before(SYSTEM_TICKS, expire))
-		; /* do nothing */
+		__wfi(); /* Put the CPU in low power state until next IRQ */
 }
 
 static inline void delay_ms(unsigned long ms)
@@ -142,7 +142,7 @@ static inline void delay_ms(unsigned long ms)
 	 * would cause saving and restoring registers on the stack */
 	unsigned long expire = (ms * HZ / 1000) + SYSTEM_TICKS;
 	while (time_before(SYSTEM_TICKS, expire))
-		; /* do nothing */
+		__wfi(); /* Put the CPU in low power state until next IRQ */
 }
 
 #define delay_s(seconds) delay_ms((seconds) * 1000)
