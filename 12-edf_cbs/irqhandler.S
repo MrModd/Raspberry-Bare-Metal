@@ -164,13 +164,19 @@ _irq_schedule:
 	                                     * to schedule as argument. There already is such task in
 	                                     * r0, returned by previous call of schedule() */
 	
-	/* This task will not return from the jump until the scheduler will put it again on the
-	 * CPU. After the jump function the register content changed, including the stack pointer
-	 * that now points to the stack of the new task in execution. */
+	/* _switch_to() function has just changed the the non AAPCS-clobbered registers and the stack
+	 * pointer, making it pointing to the stack of the new task.
+	 * What remains to do is to recover AAPCS-clobbered registers. Among them there's the
+	 * return address (see the figure in tasks.c) that contains last instruction + 4 executed
+	 * by this new task.
+	 * Next instructions will recover these registers and the return address will be loaded
+	 * in the pc register.
+	 * Next section is in common whether or not a task switch must occur. In any case, at the
+	 * begining of _irq_handler, these registers have been saved on the stack. */
 	
 .Lnoswitch:
 	
-	/* Now it's time to restore those registers at the top of the stack that are saved every time
+	/* So, it's time to restore those registers at the top of the stack that are saved every time
 	 * the task is removed from the execution. These are also the registers initialized during the
 	 * task creation. See init_task_context() in task.c. */
 	
