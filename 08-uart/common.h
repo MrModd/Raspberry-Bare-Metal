@@ -30,6 +30,8 @@ extern void panic1(void);
 extern void panic2(void);
 extern void panic3(void);
 extern void panic4(void);
+extern void init_uart(void);
+extern void init_miniuart(void);
 extern int putc(int);
 extern int puts(const char*);
 extern int puth(unsigned long);

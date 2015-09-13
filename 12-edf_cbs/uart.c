@@ -18,6 +18,96 @@
 
 #include "raspberry.h"
 
+static void remove_pull_resistors_uart(void)
+{
+	/* Remove pull resistors from UART pins (SoC manual at page 100-101) */
+	
+	iomem(GPIO_GPPUD) &= 0u; /* 0b00 in order to remove pull resistors */
+	loop_delay(80); /* Wait 150 clock cycles (loop_delay(1) takes more than 1 tick) */
+	iomem_high(GPIO_GPPUDCLK0, ((1<<GPIO_UART_TX) | (1<<GPIO_UART_RX)));
+	/* Bits set to 1 in GPIO_GPPUDCLK0/1 assume the pull-up/down state
+	 * defined in register GPPUD. Having set to 0 that register we want
+	 * to disable pull resistors from GPIO 14 and 15 */
+	loop_delay(80); /* Wait 150 clock cycles (loop_delay(1) takes more than 1 tick) */
+	/* We should reset GPIO_GPPUD register, but it is already 0 */
+	iomem(GPIO_GPPUDCLK0) &= 0u; /* Now GPIO14 and 15 has taken requested state. Reset the register */
+}
+
+void init_uart(void)
+{
+	/* Examples:
+	 * http://wiki.osdev.org/ARM_RaspberryPi_Tutorial_C#uart.c
+	 * https://github.com/dwelch67/raspberrypi/tree/master/uartx01 */
+	
+	/* Wait until previous transmissions end (uboot) */
+	while(!(iomem(UART_FR) & UART_FR_TXFE));
+	
+	/* Disable UART0 and clear Control Register */
+	iomem(UART_CR) = 0u;
+
+	/* Set UART0 mode for GPIO14-15 */
+	GPIO_SET_FUNC(GPIO_GPFSEL1,GPIO_UART_TX_SEL_OFFSET,GPIO_ALT1_MASK)
+	GPIO_SET_FUNC(GPIO_GPFSEL1,GPIO_UART_RX_SEL_OFFSET,GPIO_ALT1_MASK)
+	
+	remove_pull_resistors_uart();
+	
+	/* Initialize UART0 */
+	iomem(UART_ICR) = 0x7FF; /* Clear pendant interrupts */
+	iomem(UART_FR) = 0x80; /* Reset flag register */
+	
+	// Set integer & fractional part of baud rate.
+	// Divider = UART_CLOCK/(16 * Baud)
+	// Fraction part register = (Fractional part * 64) + 0.5
+	// UART_CLOCK = 3MHz; Baud = 115200.
+	// Divider = 3000000/(16 * 115200) = 1.627 = ~1.
+	// Fractional part register = (.627 * 64) + 0.5 = 40.6 = ~40.
+	iomem(UART_IBRD) = 1; /* Integer part of the Baud Rate divisor */
+	iomem(UART_FBRD) = 40; /* Fractional part of the Baud Rate divisor */
+	
+	iomem(UART_LCRH) = UART_LCRH_WLEN | UART_LCRH_FEN; /* Set UART characteristics (8bit, FIFO enabled) */
+	iomem(UART_IMSC) = 0u; /* Clear all interrupts */
+	iomem_high(UART_CR, UART_CR_TXE | UART_CR_RXE); /* Enable sending and receiving channel */
+
+	/* Enable UART0 */
+	iomem_high(UART_CR, UART_CR_UARTEN);
+}
+
+void init_miniuart(void)
+{
+	/* Examples:
+	 * https://github.com/dwelch67/raspberrypi/blob/master/uart01/uart01.c */
+	
+	/* Wait until previous transmissions end (Uboot) */
+	while(!(iomem(UART_FR) & UART_FR_TXFE)); /* (Uboot uses UART0) */
+	 
+	/* Disable UART0 */
+	iomem_low(UART_CR, UART_CR_UARTEN);
+	
+	/* Set UART1 (mini UART) mode for GPIO14-15 */
+	GPIO_SET_FUNC(GPIO_GPFSEL1,GPIO_UART_TX_SEL_OFFSET,GPIO_ALT5_MASK)
+	GPIO_SET_FUNC(GPIO_GPFSEL1,GPIO_UART_RX_SEL_OFFSET,GPIO_ALT5_MASK)
+	
+	remove_pull_resistors_uart();
+	
+	iomem(AUX_ENABLES) = AUX_EN_UART;
+	iomem(AUX_MU_IER_REG) = 0; /* Disable interrupt */
+	iomem(AUX_MU_IIR_REG) = 0; /* Disable interrupt */
+	iomem(AUX_MU_CNTL_REG) = 0; /* Reset UART configuration register */
+	iomem(AUX_MU_LCR_REG) = AUX_MU_LCR_DATA_SIZE_MASK; /* Reset data format register (SEE THE DATASHEET ERRATA) */
+	/* baudrate = system_clock_freq / (8 * (baudrate_reg + 1))
+	 * baudrate_reg = (system_clock_freq / (8 * baudrate)) - 1
+	 * 
+	 * Where system_clock_freq is the GPU frequency (default at 250MHz)
+	 * 
+	 * 250000000/8/1152000 - 1 ~= 270 */
+	iomem(AUX_MU_BAUD_REG) = 270;
+	
+	iomem_high(AUX_MU_CNTL_REG, AUX_MU_CNTL_TX | AUX_MU_CNTL_RX); /* Enable sending and receiving channel */
+	
+	/* Wait a bit */
+	loop_delay(100u);
+}
+
 int putc_uart0(int ch)
 {
 	/* UART0 */

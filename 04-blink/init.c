@@ -20,7 +20,7 @@
 
 /* Init to 0 section .bss, where static variables that
  * must be initialized to 0 are located */
-void init_bss()
+static void init_bss(void)
 {
 	/* _bss_start and _bss_end symbols are defined during
 	 * linking process in file sert.lds */
@@ -48,7 +48,7 @@ void init_bss()
 }
 
 /* Init memory and then jump to entry() */
-void _init()
+void _init(void)
 {
 	init_bss();
 	

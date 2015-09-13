@@ -20,7 +20,7 @@
 
 /* Init to 0 section .bss, where static variables that
  * must be initialized to 0 are located */
-void init_bss()
+static void init_bss(void)
 {
 	/* _bss_start and _bss_end symbols are defined during
 	 * linking process in file sert.lds */
@@ -47,7 +47,7 @@ void init_bss()
 	 * to the address of _bss_start and we iterate until _bss_end */
 }
 
-void init_gpio()
+static void init_gpio(void)
 {
 	/* Init GPIO 16 (wired to LED ACT) as Output */
 	
@@ -63,7 +63,7 @@ void init_gpio()
 }
 
 /* Init memory peripherals and then jump to entry() */
-void _init()
+void _init(void)
 {
 	init_bss();
 	init_gpio();

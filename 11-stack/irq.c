@@ -99,6 +99,18 @@ void _bsp_irq(void)
 	}
 }
 
+/* Initialize all interrupts */
+void init_irq(void)
+{
+	/* Mask all interrupts */
+	iomem(IRQ_DISABLE1) = 0xfffffffful;
+	iomem(IRQ_DISABLE2) = 0xfffffffful;
+	iomem(IRQ_BASIC_DISABLE) = 0xfffffffful;
+	
+	/* Enable interrupts globally */
+	irq_enable();
+}
+
 /* Set a function as interrupt handler for the GPU IRQ 1 line n */
 int register_isr_irq1(int n, isr_t func)
 {
