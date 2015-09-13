@@ -68,7 +68,7 @@
  * 			Rt			is the source register from where the processor takes input data
  * 			CRn			is the coprocessor register
  * 			CRm			is another coprocessor register
- * 			#opcode2	is another opcode specific for the current coprocessore (it is optional and are 3 bits)
+ * 			#opcode2	is another opcode specific for the current coprocessor (it is optional and are 3 bits)
  * 
  * As input register we use [dummy] because we don't actually need that. Using dummy we are telling to the
  * compiler to use a register currently unused, avoiding to accidentally picking a register the compiler

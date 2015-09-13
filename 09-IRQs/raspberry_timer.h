@@ -57,7 +57,7 @@ iomemdef(TIMER_COUNTER, TIMER_BASE + 0x420); /* Free running counter (Not in rea
  */
 #define APB_CLOCK 250000000 /* Hz */
 #define TIMER_FREQ 1000000 /* Hz */
-#define TIMER_PRE_DIVIDER ((unsigned long)(APB_CLOCK / TIMER_FREQ) - 1) /* To be set in TIMER_PRE_DIVIDER register */
+#define PRE_DIVIDER_VAL ((unsigned long)(APB_CLOCK / TIMER_FREQ) - 1) /* To be set in TIMER_PRE_DIVIDER register */
 
 /* We want an interrupt assertion every 1/Hz seconds.
  * There's a register that get decremented every 1/TIMER_FREQ seconds

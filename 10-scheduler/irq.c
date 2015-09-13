@@ -18,7 +18,7 @@
 
 #include "raspberry.h"
 
-/* These arrays are used to contains pointers to the functions that should be
+/* These arrays are used to contain pointers to the functions that should be
  * called when a certain interrupt line become asserted. These functions
  * represent the high-level interrupt handler functions. */
 static isr_t ISR_IRQ1[IRQ_1_LINES];

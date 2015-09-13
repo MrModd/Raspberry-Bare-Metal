@@ -197,7 +197,7 @@ void init_miniuart()
 	iomem(AUX_MU_IER_REG) = 0; /* Disable interrupt */
 	iomem(AUX_MU_IIR_REG) = 0; /* Disable interrupt */
 	iomem(AUX_MU_CNTL_REG) = 0; /* Reset UART configuration register */
-	iomem(AUX_MU_LCR_REG) = AUX_MU_LCR_DATA_SIZE_MASK; /* Reset data format register (SEE THE DATASHEET ERRATA)*/
+	iomem(AUX_MU_LCR_REG) = AUX_MU_LCR_DATA_SIZE_MASK; /* Reset data format register (SEE THE DATASHEET ERRATA) */
 	/* baudrate = system_clock_freq / (8 * (baudrate_reg + 1))
 	 * baudrate_reg = (system_clock_freq / (8 * baudrate)) - 1
 	 * 

@@ -36,13 +36,12 @@ void init_ticks(void)
 	
 	/* Register isr_tick() function as IRQ handler for ARM timer */
 	if (register_isr_irq_basic(TIMER_IRQ_LINE, isr_tick)) {
-		irq_enable();
 		puts("Cannot register timer interrupt\n");
 		panic0();
 	}
 	
 	/* Timer clock must be 1MHz as expected by SP804 ARM timer module. */
-	iomem(TIMER_PRE_DIVIDER) = TIMER_PRE_DIVIDER;
+	iomem(TIMER_PRE_DIVIDER) = PRE_DIVIDER_VAL;
 	
 	/* Now we want the timer to generate an interrupt at frequency of 1000Hz */
 	iomem(TIMER_LOAD) = TIMER_LOAD_VALUE;
