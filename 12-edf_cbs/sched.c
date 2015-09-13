@@ -108,7 +108,7 @@ static inline struct task *select_best_task(void)
 	return best;
 }
 
-struct task * schedule(void)
+struct task *schedule(void)
 {
 	struct task *best;
 	unsigned long state;

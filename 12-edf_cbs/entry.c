@@ -53,13 +53,15 @@ static void cbs_worker(void *arg)
 	delay_ms(2000);
 }
 
-static void led_cycle(void *arg __attribute__((unused)))
+static void led_cycle(void *arg)
 {
 	LED_ON
 	delay_ms(100);
 	LED_OFF
 	
-	activate_cbs_worker(&cbs0, 0);
+	/* Use the worker ID pointed by arg to
+	 * release an aperiodic job of that worker */
+	activate_cbs_worker(&cbs0, *((int *)arg));
 }
 
 static void show_ticks(void *arg __attribute__((unused)))
@@ -75,6 +77,8 @@ static void idle_task(void)
 
 void entry(void)
 {
+	static int wid;
+	
 	/* Generate a software interrupt to
 	 * test the functionality of exception
 	 * vector (set in init.c) */
@@ -82,12 +86,15 @@ void entry(void)
 	
 	welcome();
 	
-	if (add_cbs_worker(&cbs0, cbs_worker, &cbs0) == -1) {
+	/* cbs0 is the CBS server defined in this project (cbs.c)
+	 * and initialized in _init() function in init.c */
+	wid = add_cbs_worker(&cbs0, cbs_worker, &cbs0);
+	if (wid == -1) {
 		_panic(__FILE__, __LINE__, "Cannot create a worker for the CBS server.");
 	}
 	
 	if (create_task(led_cycle,
-			NULL,
+			&wid,                   /* ID of the CBS worker as argument for this task */
 			get_ticks_in_sec(2),    /* Every 2 seconds */
 			5,                      /* Initial phase */
 			get_ticks_in_sec(2),    /* Relative deadline: 2 seconds apart from release time */

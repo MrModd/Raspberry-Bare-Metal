@@ -80,7 +80,7 @@ void task_entry_point(struct task *t)
  * @t: the pointer to the task for which the stack is going to be initialized
  * @ntask: the number of the task (between 0 and MAX_NUM_TASK - 1)
  */
-void init_task_context(struct task *t, int ntask)
+static void init_task_context(struct task *t, int ntask)
 {
 	unsigned long *sp;
 	int i;
@@ -154,6 +154,8 @@ void init_task_context(struct task *t, int ntask)
  * @delay: initial delay before the firse release (task phase)
  * @priority: value in [0, MAXUINT] (0 := max priority)
  * @name: name description for this task
+ * 
+ * Returns the ID of the task. On error returns -1.
  */
 int create_task(job_t job, void *arg, unsigned long period,
 		unsigned long delay, unsigned long priority,
@@ -198,5 +200,5 @@ int create_task(job_t job, void *arg, unsigned long period,
 	puts(" created.\n");
 	irq_enable();
 	
-	return 0;
+	return i;
 }

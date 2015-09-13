@@ -93,7 +93,7 @@ void task_entry_point(struct task *t)
  * @t: the pointer to the task for which the stack is going to be initialized
  * @ntask: the number of the task (between 0 and MAX_NUM_TASK - 1)
  */
-void init_task_context(struct task *t, int ntask)
+static void init_task_context(struct task *t, int ntask)
 {
 	unsigned long *sp;
 	int i;
@@ -169,6 +169,8 @@ void init_task_context(struct task *t, int ntask)
  *             or relative deadline (for dynamic priority task)
  * @type: task type
  * @name: name description for this task
+ * 
+ * Returns the ID of the task. On error returns -1.
  */
 int create_task(job_t job, void *arg, unsigned long period,
 		unsigned long delay, unsigned long prio_dead,

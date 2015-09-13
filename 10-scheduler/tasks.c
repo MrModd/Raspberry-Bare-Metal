@@ -38,6 +38,8 @@ void init_taskset(void)
  * @delay: initial delay before the firse release (task phase)
  * @priority: value in [0, MAXUINT] (0 := max priority)
  * @name: name description for this task
+ * 
+ * Returns the ID of the task. On error returns -1.
  */
 int create_task(job_t job, void *arg, unsigned long period,
 		unsigned long delay, unsigned long priority,
@@ -79,5 +81,5 @@ int create_task(job_t job, void *arg, unsigned long period,
 	putd(i);
 	puts(" created.\n");
 	
-	return 0;
+	return i;
 }

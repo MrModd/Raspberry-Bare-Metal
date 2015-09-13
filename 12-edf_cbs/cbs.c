@@ -115,6 +115,8 @@ void decrease_cbs_budget(struct task *t)
  * @period: period of the server
  * @cbs_q: the structure of the CBS server
  * @name: a canonical name for the server
+ * 
+ * Returns the ID of the task. On error returns -1.
  */
 int init_cbs(unsigned long max_cap, unsigned long period, struct cbs_queue *cbs_q,
 		const char *name)
@@ -130,13 +132,15 @@ int init_cbs(unsigned long max_cap, unsigned long period, struct cbs_queue *cbs_
 	cbs_q->task = taskset + tid; /* Link the task structure allocated by create_task() */
 	
 	irq_enable();
-	return 0;
+	return tid;
 }
 
 /* Add a worker (a type of jobs) in a CBS server.
  * @cbs_q: the CBS server structure
  * @worker_fn: the function to be executed when the job is released
  * @worker_arg: argument for the function call
+ * 
+ * Returns the number of worker in the CBS server. On error returns -1.
  */
 int add_cbs_worker(struct cbs_queue *cbs_q, job_t worker_fn, void *worker_arg)
 {
@@ -156,5 +160,5 @@ int add_cbs_worker(struct cbs_queue *cbs_q, job_t worker_fn, void *worker_arg)
 	cbs_q->num_workers++;
 	
 	irq_enable();
-	return 0;
+	return i;
 }
