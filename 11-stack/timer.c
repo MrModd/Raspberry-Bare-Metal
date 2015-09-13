@@ -52,8 +52,5 @@ void init_ticks(void)
 						| TIMER_CTLR_IRQ_EN
 						| TIMER_CTLR_EN;
 	
-	/* Enable line interrupt in IRQ BASIC register (not sure if necessary) */
-	iomem_high(IRQ_BASIC_ENABLE, 1u << TIMER_IRQ_LINE);
-	
 	irq_enable();
 }

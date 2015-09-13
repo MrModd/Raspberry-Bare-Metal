@@ -103,13 +103,14 @@ void _bsp_irq(void)
 int register_isr_irq1(int n, isr_t func)
 {
 	if (n > IRQ_1_LINES || ISR_IRQ1[n] != NULL) {
-		puts("Cannot register interrupt handler for line ");
-		putd(n);
-		puts(" in register IRQ1\n");
 		return 1;
 	}
 	
 	ISR_IRQ1[n] = func;
+	
+	/* Enable line interrupt in GPU IRQ 1 register */
+	iomem_high(IRQ_ENABLE1, 1u << n);
+	
 	return 0;
 }
 
@@ -117,13 +118,14 @@ int register_isr_irq1(int n, isr_t func)
 int register_isr_irq2(int n, isr_t func)
 {
 	if (n > IRQ_2_LINES || ISR_IRQ2[n] != NULL) {
-		puts("Cannot register interrupt handler for line ");
-		putd(n);
-		puts(" in register IRQ2\n");
 		return 1;
 	}
 	
 	ISR_IRQ2[n] = func;
+	
+	/* Enable line interrupt in GPU IRQ 2 register */
+	iomem_high(IRQ_ENABLE2, 1u << n);
+	
 	return 0;
 }
 
@@ -131,12 +133,13 @@ int register_isr_irq2(int n, isr_t func)
 int register_isr_irq_basic(int n, isr_t func)
 {
 	if (n > IRQ_BASIC_LINES || ISR_BASIC_IRQ[n] != NULL) {
-		puts("Cannot register interrupt handler for line ");
-		putd(n);
-		puts(" in register IRQ_BASIC\n");
 		return 1;
 	}
 	
 	ISR_BASIC_IRQ[n] = func;
+	
+	/* Enable line interrupt in IRQ BASIC register */
+	iomem_high(IRQ_BASIC_ENABLE, 1u << n);
+	
 	return 0;
 }
